@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxWidth="550.0" prefHeight="275.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ExistingCustomer">
+   <center>
+      <TableView fx:id="existingCustomerTable" prefHeight="200.0" prefWidth="550.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="name" maxWidth="200.0" prefWidth="83.95638310909271" text="Name" />
+          <TableColumn fx:id="address" maxWidth="200.0" minWidth="0.0" prefWidth="158.3517608642578" text="Address" />
+            <TableColumn fx:id="address2" maxWidth="311.86803436279297" minWidth="0.0" prefWidth="149.25927734375" text="Address2" />
+            <TableColumn fx:id="city" maxWidth="290.5903778076172" minWidth="0.0" prefWidth="55.74072265625" text="City" />
+            <TableColumn fx:id="zip" maxWidth="305.53541564941406" minWidth="0.0" prefWidth="44.56158447265625" text="Zip" />
+            <TableColumn fx:id="country" maxWidth="215.00003051757812" minWidth="0.0" prefWidth="62.29620361328125" text="Country" />
+        </columns>
+      </TableView>
+   </center>
+</BorderPane>

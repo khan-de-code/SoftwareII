@@ -1,0 +1,10 @@
+package sample;
+
+public enum ReturnCodes {
+    CONNECTION_FAILURE,
+    SUCCESS,
+    USER_NOT_FOUND,
+    STATEMENT_ERROR,
+    SIGN_UP_USER_EXISTS,
+    OVERLAPPING_APPOINTMENT
+}

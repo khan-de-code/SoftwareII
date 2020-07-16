@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane prefHeight="830.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.AddAppointment">
+   <top>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Add An Appointment">
+               <HBox.margin>
+                  <Insets left="20.0" top="20.0" />
+               </HBox.margin>
+               <font>
+                  <Font size="21.0" />
+               </font>
+            </Text>
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="TOP_CENTER" prefHeight="27.0" prefWidth="600.0" spacing="30.0">
+               <children>
+                  <RadioButton fx:id="newCustomer" mnemonicParsing="false" onAction="#newCustomerRadioSelected" text="New Customer">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="customerType" />
+                     </toggleGroup></RadioButton>
+                  <RadioButton fx:id="existingCustomer" mnemonicParsing="false" onAction="#existingCustomerRadioSelected" text="Existing Customer" toggleGroup="$customerType" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="35.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox fx:id="changeable" alignment="TOP_CENTER" />
+            <HBox alignment="TOP_CENTER" prefHeight="408.0" prefWidth="598.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="84.0" minWidth="10.0" prefWidth="84.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="65.0" minWidth="10.0" prefWidth="52.33" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="75.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="36.0" vgrow="NEVER" />
+                      <RowConstraints minHeight="10.0" prefHeight="36.0" vgrow="NEVER" />
+                      <RowConstraints minHeight="10.0" prefHeight="36.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="36.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="36.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="36.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="36.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="36.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="36.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="36.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
+                    </rowConstraints>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Description" GridPane.rowIndex="1" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Location" GridPane.rowIndex="2" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Contact" GridPane.rowIndex="3" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Type" GridPane.rowIndex="4" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Url" GridPane.rowIndex="5" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start Date" GridPane.rowIndex="6" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="End Date" GridPane.rowIndex="8" />
+                        <TextField fx:id="appointmentName" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" />
+                        <TextField fx:id="description" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+                        <TextField fx:id="location" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+                        <TextField fx:id="contact" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+                        <TextField fx:id="type" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
+                        <TextField fx:id="url" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+                        <DatePicker fx:id="startDate" prefHeight="27.0" prefWidth="271.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" />
+                        <DatePicker fx:id="endDate" prefHeight="27.0" prefWidth="274.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="8" />
+                        <Label text="Appointment Name" wrapText="true" />
+                        <Button mnemonicParsing="false" onAction="#createAppointmentBtnPushed" text="Create Appointment" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.halignment="RIGHT" GridPane.rowIndex="10" GridPane.valignment="BOTTOM">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </Button>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start Time" GridPane.rowIndex="7" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="End Time" GridPane.rowIndex="9" />
+                        <TextField fx:id="startHour" promptText="Hour" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <TextField fx:id="startMin" promptText="Min" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                        <TextField fx:id="endHour" promptText="Hour" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                        <TextField fx:id="endMin" promptText="Min" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+                        <ComboBox fx:id="startAMPM" prefWidth="150.0" promptText="AM/ PM" GridPane.columnIndex="3" GridPane.rowIndex="7" />
+                        <ComboBox fx:id="endAMPM" prefWidth="150.0" promptText="AM/ PM" GridPane.columnIndex="3" GridPane.rowIndex="9" />
+                        <Text fx:id="requiredFieldsMissing" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Required Fields Missing" visible="false" GridPane.rowIndex="10" GridPane.valignment="BOTTOM" />
+                     </children>
+                  </GridPane>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>
