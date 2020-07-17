@@ -1,9 +1,7 @@
 package sample;
 
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -12,7 +10,6 @@ import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -35,23 +32,9 @@ public class MainPageController implements Initializable {
     private Text pageTitle;
 
     @FXML
-    private Button customerRecordsBtn;
-    @FXML
-    private Button appointmentsBtn;
-
-    @FXML
     private ComboBox<String> weekMonthFilter;
     @FXML
     private TextField searchField;
-    @FXML
-    private Button searchBtn;
-
-    @FXML
-    private Button addBtn;
-    @FXML
-    private Button updateBtn;
-    @FXML
-    private Button deleteBtn;
 
     @FXML
     private TableView<Appointment> existingAppointmentTable;
@@ -75,7 +58,7 @@ public class MainPageController implements Initializable {
     private TableColumn<Customer, String> name;
 
     private ObservableList<Appointment> appointments;
-    private ObservableList<Appointment> filteredAppointments = FXCollections.observableArrayList();
+    private final ObservableList<Appointment> filteredAppointments = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -83,15 +66,15 @@ public class MainPageController implements Initializable {
         mainPageControllerService.init();
         RetVal retVal = mainPageControllerService.getAppointments();
         appointments = retVal.queryResultsAppointment;
-        title.setCellValueFactory(new PropertyValueFactory<Appointment, String>("title"));
-        description.setCellValueFactory(new PropertyValueFactory<Appointment, String>("description"));
-        location.setCellValueFactory(new PropertyValueFactory<Appointment, String>("contact"));
-        contact.setCellValueFactory(new PropertyValueFactory<Appointment, String>("contact"));
-        type.setCellValueFactory(new PropertyValueFactory<Appointment, String>("type"));
-        urlCol.setCellValueFactory(new PropertyValueFactory<Appointment, String>("url"));
-        start.setCellValueFactory(new PropertyValueFactory<Appointment, LocalDateTime>("start"));
-        end.setCellValueFactory(new PropertyValueFactory<Appointment, LocalDateTime>("end"));
-        name.setCellValueFactory(new PropertyValueFactory<Customer, String>("customerName"));
+        title.setCellValueFactory(new PropertyValueFactory<>("title"));
+        description.setCellValueFactory(new PropertyValueFactory<>("description"));
+        location.setCellValueFactory(new PropertyValueFactory<>("contact"));
+        contact.setCellValueFactory(new PropertyValueFactory<>("contact"));
+        type.setCellValueFactory(new PropertyValueFactory<>("type"));
+        urlCol.setCellValueFactory(new PropertyValueFactory<>("url"));
+        start.setCellValueFactory(new PropertyValueFactory<>("start"));
+        end.setCellValueFactory(new PropertyValueFactory<>("end"));
+        name.setCellValueFactory(new PropertyValueFactory<>("customerName"));
 
         weekMonthFilter.getItems().add("View All Appointments");
         weekMonthFilter.getItems().add("View Calendar By Month");
@@ -101,32 +84,31 @@ public class MainPageController implements Initializable {
         // depending on the option chosen
         weekMonthFilter.valueProperty().addListener((options, oldValue, newValue) -> {
 
-            if (newValue.equals("View All Appointments")){
-                filteredAppointments.clear();
-
-                for (Appointment appointment: appointments) {
-                    filteredAppointments.add(appointment);
+            switch (newValue) {
+                case "View All Appointments" -> {
+                    filteredAppointments.clear();
+                    filteredAppointments.addAll(appointments);
+                    existingAppointmentTable.setItems(filteredAppointments);
                 }
-                existingAppointmentTable.setItems(filteredAppointments);
-            } else if (newValue.equals("View Calendar By Month")){
-                filteredAppointments.clear();
+                case "View Calendar By Month" -> {
+                    filteredAppointments.clear();
+                    for (Appointment appointment : appointments) {
 
-                for (Appointment appointment: appointments) {
-
-                    if(withinAMonth(appointment.getStart())){
-                        filteredAppointments.add(appointment);
+                        if (withinAMonth(appointment.getStart())) {
+                            filteredAppointments.add(appointment);
+                        }
                     }
+                    existingAppointmentTable.setItems(filteredAppointments);
                 }
-                existingAppointmentTable.setItems(filteredAppointments);
-            } else if (newValue.equals("View Calendar By Week")){
-                filteredAppointments.clear();
-
-                for (Appointment appointment: appointments) {
-                    if(withinAWeek(appointment.getStart())){
-                        filteredAppointments.add(appointment);
+                case "View Calendar By Week" -> {
+                    filteredAppointments.clear();
+                    for (Appointment appointment : appointments) {
+                        if (withinAWeek(appointment.getStart())) {
+                            filteredAppointments.add(appointment);
+                        }
                     }
+                    existingAppointmentTable.setItems(filteredAppointments);
                 }
-                existingAppointmentTable.setItems(filteredAppointments);
             }
         });
 
@@ -171,11 +153,7 @@ public class MainPageController implements Initializable {
         calendar.setTime(Date.from(start.atZone(ZoneId.of(TimeZone.getDefault().getID())).toInstant()));
         int checkWeek = calendar.get(Calendar.WEEK_OF_YEAR);
 
-        if (currentWeek == checkWeek){
-            return true;
-        } else {
-            return false;
-        }
+        return currentWeek == checkWeek;
     }
 
     public Boolean withinAMonth(LocalDateTime start){
@@ -187,40 +165,35 @@ public class MainPageController implements Initializable {
         calendar.setTime(Date.from(start.atZone(ZoneId.of(TimeZone.getDefault().getID())).toInstant()));
         int checkMonth = calendar.get(Calendar.MONTH);
 
-        if (currentMonth == checkMonth){
-            return true;
-        } else {
-            return false;
-        }
+        return currentMonth == checkMonth;
     }
 
     public void refreshFilter(String newValue){
-        if (newValue.equals("View All Appointments")){
-            filteredAppointments.clear();
-
-            for (Appointment appointment: appointments) {
-                filteredAppointments.add(appointment);
+        switch (newValue) {
+            case "View All Appointments" -> {
+                filteredAppointments.clear();
+                filteredAppointments.addAll(appointments);
+                existingAppointmentTable.setItems(filteredAppointments);
             }
-            existingAppointmentTable.setItems(filteredAppointments);
-        } else if (newValue.equals("View Calendar By Month")){
-            filteredAppointments.clear();
+            case "View Calendar By Month" -> {
+                filteredAppointments.clear();
+                for (Appointment appointment : appointments) {
 
-            for (Appointment appointment: appointments) {
-
-                if(withinAMonth(appointment.getStart())){
-                    filteredAppointments.add(appointment);
+                    if (withinAMonth(appointment.getStart())) {
+                        filteredAppointments.add(appointment);
+                    }
                 }
+                existingAppointmentTable.setItems(filteredAppointments);
             }
-            existingAppointmentTable.setItems(filteredAppointments);
-        } else if (newValue.equals("View Calendar By Week")){
-            filteredAppointments.clear();
-
-            for (Appointment appointment: appointments) {
-                if(withinAWeek(appointment.getStart())){
-                    filteredAppointments.add(appointment);
+            case "View Calendar By Week" -> {
+                filteredAppointments.clear();
+                for (Appointment appointment : appointments) {
+                    if (withinAWeek(appointment.getStart())) {
+                        filteredAppointments.add(appointment);
+                    }
                 }
+                existingAppointmentTable.setItems(filteredAppointments);
             }
-            existingAppointmentTable.setItems(filteredAppointments);
         }
     }
 
@@ -236,8 +209,7 @@ public class MainPageController implements Initializable {
         existingAppointmentTable.setItems(filteredAppointments);
     }
 
-    public void addBtnPushed() throws IOException {
-        AddAppointment.start(loggedInUser, loggedInUserID);
+    private void refreshMainPage(){
         MainPageControllerService mainPageControllerService = new MainPageControllerService();
         mainPageControllerService.init();
         RetVal retVal = mainPageControllerService.getAppointments();
@@ -246,7 +218,15 @@ public class MainPageController implements Initializable {
         existingAppointmentTable.setItems(appointments);
     }
 
-    public void updateBtnPushed() throws IOException {
+    public void addBtnPushed() throws IOException {
+        AddAppointment.start(loggedInUser, loggedInUserID);
 
+        refreshMainPage();
+    }
+
+    public void updateBtnPushed() throws IOException {
+        UpdateAppointment.start(loggedInUser, loggedInUserID);
+
+        refreshMainPage();
     }
 }

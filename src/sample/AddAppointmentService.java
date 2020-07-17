@@ -5,8 +5,6 @@ import java.util.ArrayList;
 
 public class AddAppointmentService {
     private Connection connection;
-    private final String databaseUsername = "U06gFz";
-    private final String databasePassword = "53688759613";
     private String loggedInUser;
     private long loggedInUserID;
 
@@ -50,6 +48,8 @@ public class AddAppointmentService {
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
+            String databaseUsername = "U06gFz";
+            String databasePassword = "53688759613";
             connection = DriverManager.getConnection(
                     "jdbc:mysql://3.227.166.251/" + databaseUsername,
                     databaseUsername,
