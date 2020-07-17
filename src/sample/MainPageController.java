@@ -245,4 +245,8 @@ public class MainPageController implements Initializable {
 
         existingAppointmentTable.setItems(appointments);
     }
+
+    public void updateBtnPushed() throws IOException {
+
+    }
 }
