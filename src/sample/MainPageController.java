@@ -225,7 +225,18 @@ public class MainPageController implements Initializable {
     }
 
     public void updateBtnPushed() throws IOException {
-        UpdateAppointment.start(loggedInUser, loggedInUserID);
+        Appointment selectedAppointment = existingAppointmentTable.getSelectionModel().getSelectedItem();
+        if (selectedAppointment == null){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Update Appointment Error");
+            alert.setHeaderText("Unselected Appointment");
+            alert.setContentText("You have just attempted to update an appointment without selecting an appointment. " +
+                    "Please select an appointment to update then click the \'Update\' button again.");
+            alert.showAndWait();
+            return;
+        }
+
+        UpdateAppointment.start(loggedInUser, loggedInUserID, selectedAppointment);
 
         refreshMainPage();
     }

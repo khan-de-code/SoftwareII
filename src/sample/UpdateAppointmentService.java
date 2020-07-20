@@ -1,13 +1,12 @@
 package sample;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.List;
 
 public class UpdateAppointmentService {
     private Connection connection;
 
-    public ReturnCodes init(){
+    public ReturnCodes init() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             String databaseUsername = "U06gFz";
@@ -24,14 +23,41 @@ public class UpdateAppointmentService {
         return ReturnCodes.SUCCESS;
     }
 
-//    public getAppointment(){
-//        // TODO
-//    }
+    public ReturnCodes updateAppointment(int appointmentId, List<adjApptObj> changedVals) {
+        String valsToChange = "";
+        for (adjApptObj changedVal : changedVals) {
+            valsToChange += "'" + changedVal.valName + "', ";
+        }
+
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "UPDATE appointment";
+            sql += "\nSET ";
+            int count = 0;
+            for (adjApptObj changedVal : changedVals){
+                sql += changedVal.valName + " = '" + changedVal.val + "' ";
+
+                if (count != (changedVals.size() - 1)){
+                    sql += ", ";
+                }
+
+                count++;
+            }
+            sql += "\nWHERE appointmentId = '" + appointmentId + "'";
+            System.out.println(sql);
+            statement.executeUpdate(sql);
+
+            return closeConnection();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return ReturnCodes.CONNECTION_FAILURE;
+        }
+    }
 
     public ReturnCodes closeConnection() {
         try {
             connection.close();
-        } catch (SQLException throwables){
+        } catch (SQLException throwables) {
             return ReturnCodes.CONNECTION_FAILURE;
         }
         return ReturnCodes.SUCCESS;
