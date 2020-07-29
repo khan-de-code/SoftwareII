@@ -23,7 +23,7 @@ public class UpdateAppointmentService {
         return ReturnCodes.SUCCESS;
     }
 
-    public ReturnCodes updateAppointment(int appointmentId, List<adjApptObj> changedVals) {
+    public ReturnCodes updateAppointment(int appointmentId, List<adjApptObj> changedVals, String loggedInUser, long loggedInUserId) {
         String valsToChange = "";
         for (adjApptObj changedVal : changedVals) {
             valsToChange += "'" + changedVal.valName + "', ";
@@ -33,6 +33,11 @@ public class UpdateAppointmentService {
             Statement statement = connection.createStatement();
             String sql = "UPDATE appointment";
             sql += "\nSET ";
+
+            java.util.Date date = new java.util.Date();
+            java.sql.Timestamp now = new java.sql.Timestamp(date.getTime());
+            sql += "lastUpdateBy = '" + loggedInUser + "', ";
+
             int count = 0;
             for (adjApptObj changedVal : changedVals){
                 sql += changedVal.valName + " = '" + changedVal.val + "' ";

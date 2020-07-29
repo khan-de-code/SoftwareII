@@ -74,6 +74,11 @@
                         <TextField fx:id="endMin" promptText="Min" GridPane.columnIndex="2" GridPane.rowIndex="9" />
                         <ComboBox fx:id="startAMPM" prefWidth="150.0" promptText="AM/ PM" GridPane.columnIndex="3" GridPane.rowIndex="7" />
                         <ComboBox fx:id="endAMPM" prefWidth="150.0" promptText="AM/ PM" GridPane.columnIndex="3" GridPane.rowIndex="9" />
+                        <Text fx:id="requiredFieldsMissing" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Required Fields Missing" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="10" GridPane.valignment="BOTTOM">
+                           <GridPane.margin>
+                              <Insets right="20.0" />
+                           </GridPane.margin>
+                        </Text>
                      </children>
                   </GridPane>
                </children>

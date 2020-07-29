@@ -55,7 +55,7 @@ public class MainPageController implements Initializable {
     @FXML
     private TableColumn<Appointment, LocalDateTime> end;
     @FXML
-    private TableColumn<Customer, String> name;
+    private TableColumn<Appointment, String> name;
 
     private ObservableList<Appointment> appointments;
     private final ObservableList<Appointment> filteredAppointments = FXCollections.observableArrayList();
@@ -132,6 +132,9 @@ public class MainPageController implements Initializable {
         view = state.CUSTOMER_RECORDS;
         weekMonthFilter.setVisible(false);
         pageTitle.setText("Customer Management Portal");
+
+        existingAppointmentTable.getItems().clear();
+        existingAppointmentTable.getColumns().clear();
     }
 
     public void appointmentsBtnPushed(){
@@ -142,6 +145,10 @@ public class MainPageController implements Initializable {
         view = state.APPOINTMENTS;
         weekMonthFilter.setVisible(true);
         pageTitle.setText("Appointment Management Portal");
+
+        existingAppointmentTable.getColumns().addAll(name, title, description, location, contact, type, urlCol, start, end);
+        refreshFilter("View All Appointments");
+        existingAppointmentTable.setItems(filteredAppointments);
     }
 
     public Boolean withinAWeek(LocalDateTime start){
@@ -209,7 +216,7 @@ public class MainPageController implements Initializable {
         existingAppointmentTable.setItems(filteredAppointments);
     }
 
-    private void refreshMainPage(){
+    private void refreshMainPageAppointments(){
         MainPageControllerService mainPageControllerService = new MainPageControllerService();
         mainPageControllerService.init();
         RetVal retVal = mainPageControllerService.getAppointments();
@@ -221,7 +228,7 @@ public class MainPageController implements Initializable {
     public void addBtnPushed() throws IOException {
         AddAppointment.start(loggedInUser, loggedInUserID);
 
-        refreshMainPage();
+        refreshMainPageAppointments();
     }
 
     public void updateBtnPushed() throws IOException {
@@ -238,6 +245,27 @@ public class MainPageController implements Initializable {
 
         UpdateAppointment.start(loggedInUser, loggedInUserID, selectedAppointment);
 
-        refreshMainPage();
+        refreshMainPageAppointments();
     }
+
+    public void deleteBtnPushed() throws IOException {
+        Appointment selectedAppointment = existingAppointmentTable.getSelectionModel().getSelectedItem();
+        if (selectedAppointment == null){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Delete Appointment Error");
+            alert.setHeaderText("Unselected Appointment");
+            alert.setContentText("You have just attempted to delete an appointment without selecting an appointment. " +
+                    "Please select an appointment to update then click the \'Update\' button again.");
+            alert.showAndWait();
+            return;
+        }
+
+        DeleteAppointmentService deleteAppointmentService = new DeleteAppointmentService();
+        deleteAppointmentService.init();
+        deleteAppointmentService.deleteAppointment(selectedAppointment);
+
+        refreshMainPageAppointments();
+    }
+
+
 }

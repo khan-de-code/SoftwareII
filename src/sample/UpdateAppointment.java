@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -67,6 +68,9 @@ public class UpdateAppointment implements Initializable {
     @FXML
     private ComboBox<String> endAMPM;
     private String origEndAMPM;
+
+    @FXML
+    private Text requiredFieldsMissing;
 
     public static void start(String loggedInUser, long loggedInUserID, Appointment selectedAppointment) throws IOException {
         Stage window = new Stage();
@@ -140,9 +144,88 @@ public class UpdateAppointment implements Initializable {
 
         startDate.getEditor().setDisable(true);
         endDate.getEditor().setDisable(true);
+
+        requiredFieldsMissing.setVisible(false);
+    }
+
+    private Boolean requiredFieldsMissing(Object... fields){
+        Boolean retVal = false;
+        for(Object field : fields) {
+            if (field instanceof TextField){
+                if (((TextField) field).getText().equals("")){
+                    retVal = true;
+                    break;
+                }
+            } else if (field instanceof ComboBox){
+                if (((ComboBox) field).getValue() == null){
+                    retVal = true;
+                    break;
+                }
+
+            } else if (field instanceof DatePicker){
+                if (((DatePicker) field).getValue() == null){
+                    retVal = true;
+                    break;
+                }
+            }
+        }
+
+        return retVal;
     }
 
     public void adjustAppointmentBtnPushed() {
+        // TODO add data checking as in AddAppointment with red borders etc.
+        Object[] fields = {
+                appointmentName, description, location, contact, type, url, startHour, startMin, startMin,
+                startAMPM, endHour, endMin, endAMPM
+        };
+
+        if (requiredFieldsMissing(fields)){
+            requiredFieldsMissing.setVisible(true);
+            for (Object field : fields) {
+                if (requiredFieldsMissing(field)) {
+                    if (field instanceof TextField) {
+                        ((TextField) field).setStyle("-fx-text-box-border: #B22222; -fx-focus-color: #B22222;");
+                    } else if (field instanceof ComboBox) {
+                        ((ComboBox) field).setStyle("-fx-border-color: #B22222; -fx-focus-color: #B22222;");
+                    } else if (field instanceof DatePicker) {
+                        ((DatePicker) field).setStyle("-fx-border-color: #B22222; -fx-focus-color: #B22222;");
+                    }
+                } else {
+                    if (field instanceof TextField) {
+                        ((TextField) field).setStyle(null);
+                    } else if (field instanceof ComboBox) {
+                        ((ComboBox) field).setStyle(null);
+                    } else if (field instanceof DatePicker) {
+                        ((DatePicker) field).setStyle(null);
+                    }
+                }
+            }
+            return;
+        } else {
+            requiredFieldsMissing.setVisible(false);
+
+            for (Object field : fields) {
+                if (requiredFieldsMissing(field)) {
+                    if (field instanceof TextField) {
+                        ((TextField) field).setStyle("-fx-text-box-border: #B22222; -fx-focus-color: #B22222;");
+                    } else if (field instanceof ComboBox) {
+                        ((ComboBox) field).setStyle("-fx-border-color: #B22222; -fx-focus-color: #B22222;");
+                    } else if (field instanceof DatePicker) {
+                        ((DatePicker) field).setStyle("-fx-border-color: #B22222; -fx-focus-color: #B22222;");
+                    }
+                } else {
+                    if (field instanceof TextField) {
+                        ((TextField) field).setStyle(null);
+                    } else if (field instanceof ComboBox) {
+                        ((ComboBox) field).setStyle(null);
+                    } else if (field instanceof DatePicker) {
+                        ((DatePicker) field).setStyle(null);
+                    }
+                }
+            }
+        }
+
         List<adjApptObj> changedVals = new ArrayList<>();
 
         if (!origAppointmentName.equals(appointmentName.getText())) {
@@ -190,7 +273,7 @@ public class UpdateAppointment implements Initializable {
         } else {
             UpdateAppointmentService updateAppointmentService = new UpdateAppointmentService();
             updateAppointmentService.init();
-            ReturnCodes updateResults = updateAppointmentService.updateAppointment(selectedAppointment.getAppointmentId(), changedVals);
+            ReturnCodes updateResults = updateAppointmentService.updateAppointment(selectedAppointment.getAppointmentId(), changedVals, loggedInUser, loggedInUserID);
             if (updateResults == ReturnCodes.SUCCESS){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Update Successful");

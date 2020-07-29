@@ -60,7 +60,7 @@
                   </HBox>
                   <Button fx:id="addBtn" mnemonicParsing="false" onAction="#addBtnPushed" text="Add" />
                   <Button fx:id="updateBtn" mnemonicParsing="false" onAction="#updateBtnPushed" text="Update" />
-                  <Button fx:id="deleteBtn" mnemonicParsing="false" text="Delete" />
+                  <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#deleteBtnPushed" text="Delete" />
                </children>
                <padding>
                   <Insets bottom="15.0" left="30.0" right="30.0" />
