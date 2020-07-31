@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -37,7 +38,7 @@ public class MainPageController implements Initializable {
     private TextField searchField;
 
     @FXML
-    private TableView<Appointment> existingAppointmentTable;
+    private TableView existingAppointmentTable;
     @FXML
     private TableColumn<Appointment, String> title;
     @FXML
@@ -57,8 +58,23 @@ public class MainPageController implements Initializable {
     @FXML
     private TableColumn<Appointment, String> name;
 
+    @FXML
+    private TableColumn<Customer, String> customerName;
+    @FXML
+    private TableColumn<Customer, String> address;
+    @FXML
+    private TableColumn<Customer, String> address2;
+    @FXML
+    private TableColumn<Customer, String> city;
+    @FXML
+    private TableColumn<Customer, String> zip;
+    @FXML
+    private TableColumn<Customer, String> country;
+
+    private ObservableList<Customer> customers;
+    private ObservableList<Customer> filteredCustomers = FXCollections.observableArrayList();
     private ObservableList<Appointment> appointments;
-    private final ObservableList<Appointment> filteredAppointments = FXCollections.observableArrayList();
+    private ObservableList<Appointment> filteredAppointments = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -75,6 +91,20 @@ public class MainPageController implements Initializable {
         start.setCellValueFactory(new PropertyValueFactory<>("start"));
         end.setCellValueFactory(new PropertyValueFactory<>("end"));
         name.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+
+        customerName.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(6));
+        address.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(6));
+        address2.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(6));
+        city.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(6));
+        zip.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(6));
+        country.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(6));
+
+        customerName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        address.setCellValueFactory(new PropertyValueFactory<>("address"));
+        address2.setCellValueFactory(new PropertyValueFactory<>("address2"));
+        city.setCellValueFactory(new PropertyValueFactory<>("city"));
+        zip.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
+        country.setCellValueFactory(new PropertyValueFactory<>("country"));
 
         weekMonthFilter.getItems().add("View All Appointments");
         weekMonthFilter.getItems().add("View Calendar By Month");
@@ -114,6 +144,8 @@ public class MainPageController implements Initializable {
 
         weekMonthFilter.getSelectionModel().selectFirst();
 
+        existingAppointmentTable.getColumns().clear();
+        existingAppointmentTable.getColumns().addAll(name, title, description, location, contact, type, urlCol, start, end);
         existingAppointmentTable.setItems(filteredAppointments);
 
 
@@ -135,6 +167,25 @@ public class MainPageController implements Initializable {
 
         existingAppointmentTable.getItems().clear();
         existingAppointmentTable.getColumns().clear();
+
+        ExistingCustomerService existingCustomerService = new ExistingCustomerService();
+        existingCustomerService.init();
+        RetVal results = existingCustomerService.getCustomers();
+
+        if (results.status == ReturnCodes.CONNECTION_FAILURE) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Connection Failure");
+            alert.setHeaderText("Application Connection Failure");
+            alert.setContentText("In the attempt to access the database an error occurred. Please try to close the add" +
+                    "appointment screen then reopen it. If the error persists, please contact support.");
+            alert.showAndWait();
+        } else {
+            customers = results.queryResults;
+            filteredCustomers.addAll(customers);
+        }
+
+        existingAppointmentTable.getColumns().addAll(customerName, address, address2, city, zip, country);
+        existingAppointmentTable.setItems(filteredCustomers);
     }
 
     public void appointmentsBtnPushed(){
@@ -145,6 +196,9 @@ public class MainPageController implements Initializable {
         view = state.APPOINTMENTS;
         weekMonthFilter.setVisible(true);
         pageTitle.setText("Appointment Management Portal");
+
+        existingAppointmentTable.getItems().clear();
+        existingAppointmentTable.getColumns().clear();
 
         existingAppointmentTable.getColumns().addAll(name, title, description, location, contact, type, urlCol, start, end);
         refreshFilter("View All Appointments");
@@ -176,6 +230,7 @@ public class MainPageController implements Initializable {
     }
 
     public void refreshFilter(String newValue){
+
         switch (newValue) {
             case "View All Appointments" -> {
                 filteredAppointments.clear();
@@ -205,24 +260,56 @@ public class MainPageController implements Initializable {
     }
 
     public void searchBtnPushed(){
-        if (searchField.getText().equals("")){
-            refreshFilter(weekMonthFilter.getValue());
-            return;
+        if (view == state.APPOINTMENTS) {
+            if (searchField.getText().equals("")){
+                refreshFilter(weekMonthFilter.getValue());
+                return;
+            }
+
+            filteredAppointments.removeIf(appointment -> !appointment.getCustomerName().toLowerCase()
+                    .equals(searchField.getText().toLowerCase()));
+            existingAppointmentTable.setItems(filteredAppointments);
+        } else {
+            if (searchField.getText().equals("")){
+                filteredCustomers.addAll(customers);
+                existingAppointmentTable.setItems(filteredCustomers);
+                return;
+            }
+
+            filteredCustomers.removeIf(customer -> !customer.getCustomerName().toLowerCase()
+                    .equals(searchField.getText().toLowerCase()));
+            existingAppointmentTable.setItems(filteredCustomers);
         }
 
-        filteredAppointments.removeIf(appointment -> !appointment.getCustomerName().toLowerCase()
-                .equals(searchField.getText().toLowerCase()));
 
-        existingAppointmentTable.setItems(filteredAppointments);
     }
 
     private void refreshMainPageAppointments(){
-        MainPageControllerService mainPageControllerService = new MainPageControllerService();
-        mainPageControllerService.init();
-        RetVal retVal = mainPageControllerService.getAppointments();
-        appointments = retVal.queryResultsAppointment;
+        if (view == state.APPOINTMENTS) {
+            MainPageControllerService mainPageControllerService = new MainPageControllerService();
+            mainPageControllerService.init();
+            RetVal retVal = mainPageControllerService.getAppointments();
+            appointments = retVal.queryResultsAppointment;
 
-        existingAppointmentTable.setItems(appointments);
+            filteredAppointments = FXCollections.observableArrayList();
+            filteredAppointments.addAll(appointments);
+
+            existingAppointmentTable.getItems().clear();
+            existingAppointmentTable.setItems(filteredAppointments);
+        } else {
+            ExistingCustomerService existingCustomerService = new ExistingCustomerService();
+            existingCustomerService.init();
+            RetVal results = existingCustomerService.getCustomers();
+            customers = results.queryResults;
+
+            filteredCustomers = FXCollections.observableArrayList();
+            filteredCustomers.addAll(customers);
+
+            existingAppointmentTable.getItems().clear();
+            existingAppointmentTable.setItems(filteredCustomers);
+        }
+
+
     }
 
     public void addBtnPushed() throws IOException {
@@ -232,7 +319,7 @@ public class MainPageController implements Initializable {
     }
 
     public void updateBtnPushed() throws IOException {
-        Appointment selectedAppointment = existingAppointmentTable.getSelectionModel().getSelectedItem();
+        Appointment selectedAppointment = (Appointment) existingAppointmentTable.getSelectionModel().getSelectedItem();
         if (selectedAppointment == null){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Update Appointment Error");
@@ -249,22 +336,50 @@ public class MainPageController implements Initializable {
     }
 
     public void deleteBtnPushed() throws IOException {
-        Appointment selectedAppointment = existingAppointmentTable.getSelectionModel().getSelectedItem();
-        if (selectedAppointment == null){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Delete Appointment Error");
-            alert.setHeaderText("Unselected Appointment");
-            alert.setContentText("You have just attempted to delete an appointment without selecting an appointment. " +
-                    "Please select an appointment to update then click the \'Update\' button again.");
-            alert.showAndWait();
-            return;
+        if (view == state.APPOINTMENTS) {
+            Appointment selectedAppointment = (Appointment) existingAppointmentTable.getSelectionModel().getSelectedItem();
+            if (selectedAppointment == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Delete Appointment Error");
+                alert.setHeaderText("Unselected Appointment");
+                alert.setContentText("You have just attempted to delete an appointment without selecting an appointment. " +
+                        "Please select an appointment to update then click the \'Update\' button again.");
+                alert.showAndWait();
+                return;
+            }
+
+            DeleteAppointmentService deleteAppointmentService = new DeleteAppointmentService();
+            deleteAppointmentService.init();
+            deleteAppointmentService.deleteAppointment(selectedAppointment);
+
+            refreshMainPageAppointments();
+        } else {
+            Customer selectedCustomer = (Customer) existingAppointmentTable.getSelectionModel().getSelectedItem();
+            if (selectedCustomer == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Delete Customer Error");
+                alert.setHeaderText("Unselected Customer");
+                alert.setContentText("You have just attempted to delete a customer without selecting a customer. " +
+                        "Please select a customer to update then click the \'Update\' button again.");
+                alert.showAndWait();
+                return;
+            }
+
+            DeleteAppointmentService deleteAppointmentService = new DeleteAppointmentService();
+            deleteAppointmentService.init();
+            ReturnCodes returnCodes = deleteAppointmentService.deleteCustomer(selectedCustomer);
+            if (returnCodes == ReturnCodes.DELETE_CUSTOMER_EXISTING_APPOINTMENT){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Delete Customer Error");
+                alert.setHeaderText("Existing Customer Appointment");
+                alert.setContentText("You have just attempted to delete a customer that has an appointment in the system. " +
+                        "Please ensure any customer you are attempting to delete first has no existing or past appointments.");
+                alert.showAndWait();
+                return;
+            }
+
+            refreshMainPageAppointments();
         }
-
-        DeleteAppointmentService deleteAppointmentService = new DeleteAppointmentService();
-        deleteAppointmentService.init();
-        deleteAppointmentService.deleteAppointment(selectedAppointment);
-
-        refreshMainPageAppointments();
     }
 
 

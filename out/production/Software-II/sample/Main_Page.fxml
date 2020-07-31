@@ -77,6 +77,12 @@
                   <TableColumn fx:id="urlCol" prefWidth="110.11972045898438" text="Url" />
                   <TableColumn fx:id="start" prefWidth="92.0" text="Start" />
                   <TableColumn fx:id="end" prefWidth="92.0" text="End" />
+                  <TableColumn fx:id="customerName" prefWidth="75.0" text="Customer Name" />
+                  <TableColumn fx:id="address" prefWidth="75.0" text="Address" />
+                  <TableColumn fx:id="address2" prefWidth="75.0" text="Address 2" />
+                  <TableColumn fx:id="city" prefWidth="75.0" text="City" />
+                  <TableColumn fx:id="zip" prefWidth="75.0" text="Zip" />
+                  <TableColumn fx:id="country" prefWidth="75.0" text="Country" />
               </columns>
                <VBox.margin>
                   <Insets bottom="20.0" left="20.0" right="20.0" />
