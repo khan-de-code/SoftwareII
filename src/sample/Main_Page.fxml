@@ -83,6 +83,7 @@
                   <TableColumn fx:id="city" prefWidth="75.0" text="City" />
                   <TableColumn fx:id="zip" prefWidth="75.0" text="Zip" />
                   <TableColumn fx:id="country" prefWidth="75.0" text="Country" />
+                  <TableColumn fx:id="phone" prefWidth="75.0" text="Phone" />
               </columns>
                <VBox.margin>
                   <Insets bottom="20.0" left="20.0" right="20.0" />

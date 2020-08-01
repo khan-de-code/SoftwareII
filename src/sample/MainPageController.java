@@ -70,6 +70,8 @@ public class MainPageController implements Initializable {
     private TableColumn<Customer, String> zip;
     @FXML
     private TableColumn<Customer, String> country;
+    @FXML
+    private TableColumn<Customer, String> phone;
 
     private ObservableList<Customer> customers;
     private ObservableList<Customer> filteredCustomers = FXCollections.observableArrayList();
@@ -92,12 +94,13 @@ public class MainPageController implements Initializable {
         end.setCellValueFactory(new PropertyValueFactory<>("end"));
         name.setCellValueFactory(new PropertyValueFactory<>("customerName"));
 
-        customerName.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(6));
-        address.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(6));
-        address2.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(6));
-        city.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(6));
-        zip.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(6));
-        country.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(6));
+        customerName.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+        address.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+        address2.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+        city.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+        zip.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+        country.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+        phone.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
 
         customerName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         address.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -105,6 +108,7 @@ public class MainPageController implements Initializable {
         city.setCellValueFactory(new PropertyValueFactory<>("city"));
         zip.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         country.setCellValueFactory(new PropertyValueFactory<>("country"));
+        phone.setCellValueFactory(new PropertyValueFactory<>("phone"));
 
         weekMonthFilter.getItems().add("View All Appointments");
         weekMonthFilter.getItems().add("View Calendar By Month");
@@ -184,7 +188,7 @@ public class MainPageController implements Initializable {
             filteredCustomers.addAll(customers);
         }
 
-        existingAppointmentTable.getColumns().addAll(customerName, address, address2, city, zip, country);
+        existingAppointmentTable.getColumns().addAll(customerName, address, address2, city, zip, country, phone);
         existingAppointmentTable.setItems(filteredCustomers);
     }
 
@@ -313,26 +317,52 @@ public class MainPageController implements Initializable {
     }
 
     public void addBtnPushed() throws IOException {
-        AddAppointment.start(loggedInUser, loggedInUserID);
+        if (view == state.APPOINTMENTS){
+            AddAppointment.start(loggedInUser, loggedInUserID);
 
-        refreshMainPageAppointments();
+            refreshMainPageAppointments();
+        } else if (view == state.CUSTOMER_RECORDS){
+            MainPageCustomerEdit.start(loggedInUser, loggedInUserID);
+
+            refreshMainPageAppointments();
+        }
+
     }
 
     public void updateBtnPushed() throws IOException {
-        Appointment selectedAppointment = (Appointment) existingAppointmentTable.getSelectionModel().getSelectedItem();
-        if (selectedAppointment == null){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Update Appointment Error");
-            alert.setHeaderText("Unselected Appointment");
-            alert.setContentText("You have just attempted to update an appointment without selecting an appointment. " +
-                    "Please select an appointment to update then click the \'Update\' button again.");
-            alert.showAndWait();
-            return;
+        if (view == state.APPOINTMENTS) {
+            Appointment selectedAppointment = (Appointment) existingAppointmentTable.getSelectionModel().getSelectedItem();
+
+            if (selectedAppointment == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Update Appointment Error");
+                alert.setHeaderText("Unselected Appointment");
+                alert.setContentText("You have just attempted to update an appointment without selecting an appointment. " +
+                        "Please select an appointment to update then click the \'Update\' button again.");
+                alert.showAndWait();
+                return;
+            }
+
+            UpdateAppointment.start(loggedInUser, loggedInUserID, selectedAppointment);
+
+            refreshMainPageAppointments();
+        } else {
+            Customer selectedCustomer = (Customer) existingAppointmentTable.getSelectionModel().getSelectedItem();
+
+            if (selectedCustomer == null){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Update Customer Error");
+                alert.setHeaderText("Unselected Customer");
+                alert.setContentText("You have just attempted to update a Customer without selecting a Customer. " +
+                        "Please select a Customer to update then click the \'Update\' button again.");
+                alert.showAndWait();
+                return;
+            }
+
+            MainPageCustomerEdit.start(loggedInUser, loggedInUserID, selectedCustomer);
+
+            refreshMainPageAppointments();
         }
-
-        UpdateAppointment.start(loggedInUser, loggedInUserID, selectedAppointment);
-
-        refreshMainPageAppointments();
     }
 
     public void deleteBtnPushed() throws IOException {

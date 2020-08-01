@@ -8,10 +8,10 @@ public class Customer {
     private final String phone;
     private final String city;
     private final String country;
-    private final int customerId;
+    private final Integer customerId;
 
 
-    public Customer(String customerName, String address, String address2, String postalCode, String phone, String city, String country, int customerId) {
+    public Customer(String customerName, String address, String address2, String postalCode, String phone, String city, String country, Integer customerId) {
         this.customerName = customerName;
         this.address = address;
         if (address2.equals("")){
