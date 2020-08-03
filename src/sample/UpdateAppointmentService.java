@@ -40,7 +40,13 @@ public class UpdateAppointmentService {
 
             int count = 0;
             for (adjApptObj changedVal : changedVals){
-                sql += changedVal.valName + " = '" + changedVal.val + "' ";
+                if (changedVal.valName == "startDate"){
+                    sql += "start" + " = '" + changedVal.val + "' ";
+                } else if (changedVal.valName == "endDate"){
+                    sql += "end" + " = '" + changedVal.val + "' ";
+                } else {
+                    sql += changedVal.valName + " = '" + changedVal.val + "' ";
+                }
 
                 if (count != (changedVals.size() - 1)){
                     sql += ", ";

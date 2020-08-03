@@ -13,9 +13,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class MainPageCustomerEdit implements Initializable {
+    Locale currentLocale;
+
     private String loggedInUser;
     private long loggedInUserID;
 
@@ -97,6 +100,7 @@ public class MainPageCustomerEdit implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        currentLocale = Locale.getDefault();
 
     }
 
@@ -165,6 +169,9 @@ public class MainPageCustomerEdit implements Initializable {
         mainPageCustomerEditService.init(loggedInUser, loggedInUserID, customer, null);
 
         mainPageCustomerEditService.createCustomer();
+
+        Stage window = (Stage) name.getScene().getWindow();
+        window.close();
     }
 
     private void updateCustomer(){
@@ -177,13 +184,23 @@ public class MainPageCustomerEdit implements Initializable {
                 && existingCustomer.getCity().equals(city.getText())
                 && existingCustomer.getCountry().equals(country.getText())
         ){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Update Customer Error");
-            alert.setHeaderText("Update Customer Error");
-            alert.setContentText("You have just attempted to update a customer without making any changes. " +
-                    "Please ensure you have made some changes to the customer and attempt to save your changes again.");
-            alert.showAndWait();
-            return;
+            if (currentLocale.getLanguage() != Locale.GERMAN.getLanguage()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Update Customer Error");
+                alert.setHeaderText("Update Customer Error");
+                alert.setContentText("You have just attempted to update a customer without making any changes. " +
+                        "Please ensure you have made some changes to the customer and attempt to save your changes again.");
+                alert.showAndWait();
+                return;
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Kundenfehler aktualisieren");
+                alert.setHeaderText("Kundenfehler aktualisieren");
+                alert.setContentText("Sie haben gerade versucht, einen Kunden zu aktualisieren, ohne Änderungen " +
+                        "vorzunehmen. Bitte stellen Sie sicher, dass Sie einige Änderungen am Kunden vorgenommen haben, " +
+                        "und versuchen Sie erneut, Ihre Änderungen zu speichern.");
+                alert.showAndWait();
+            }
         }
 
         Customer customer = new Customer(
@@ -201,5 +218,8 @@ public class MainPageCustomerEdit implements Initializable {
         mainPageCustomerEditService.init(loggedInUser, loggedInUserID, customer, existingCustomer);
 
         mainPageCustomerEditService.updateCustomer();
+
+        Stage window = (Stage) name.getScene().getWindow();
+        window.close();
     }
 }

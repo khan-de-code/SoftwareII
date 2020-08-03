@@ -54,7 +54,7 @@ public class Customer {
         return country;
     }
 
-    public int getCustomerId(){
+    public Integer getCustomerId(){
         return customerId;
     }
 

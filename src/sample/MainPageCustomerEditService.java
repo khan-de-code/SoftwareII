@@ -8,7 +8,6 @@ public class MainPageCustomerEditService {
     private String loggedInUser;
     private long loggedInUserID;
 
-    private Long customerId;
     private String customerName;
     private String customerAddress;
     private String customerAddress2;
@@ -22,7 +21,6 @@ public class MainPageCustomerEditService {
     public ReturnCodes init(String loggedInUser, long loggedInUserID, Customer customer, Customer existingCustomer) {
         this.loggedInUser = loggedInUser;
         this.loggedInUserID = loggedInUserID;
-        this.customerId = (long) customer.getCustomerId();
         this.customerName = customer.getCustomerName();
         this.customerAddress = customer.getAddress();
         this.customerAddress2 = customer.getAddress2();
@@ -137,32 +135,55 @@ public class MainPageCustomerEditService {
 
             if(!existingCustomer.getCountry().equals(customerCountry)){
                 sql = "UPDATE country\n"
-                + "SET country = '" + customerCountry + "', " + "lastUpdateBy = '" + loggedInUser + "'\n";
-                + "WHERE "
+                        + "INNER JOIN city ON country.countryId = city.countryId\n"
+                        + "INNER JOIN address ON city.cityId = address.cityId\n"
+                        + "INNER JOIN customer ON address.addressId = customer.addressId\n"
+                        + "SET country.country = '" + customerCountry + "', " + "country.lastUpdateBy = '" + loggedInUser + "'\n"
+                        + "WHERE customer.customerId = '" + existingCustomer.getCustomerId() + "'";
 
                 statement.executeUpdate(sql);
             }
 
             if(!existingCustomer.getCity().equals(customerCity)){
+                sql = "UPDATE city\n"
+                        + "INNER JOIN address ON city.cityId = address.cityId\n"
+                        + "INNER JOIN customer ON address.addressId = customer.addressId\n"
+                        + "SET city.city = '" + customerCity + "', " + "city.lastUpdateBy = '" + loggedInUser + "'\n"
+                        + "WHERE customer.customerId = '" + existingCustomer.getCustomerId() + "'";
 
+                statement.executeUpdate(sql);
             }
 
             if(
                     !existingCustomer.getAddress().equals(customerAddress)
-                    || existingCustomer.getAddress2().equals(customerAddress2)
-                    || existingCustomer.getPostalCode().equals(customerPostal)
-                    || existingCustomer.getPhone().equals(customerPhone)
+                    || !existingCustomer.getAddress2().equals(customerAddress2)
+                    || !existingCustomer.getPostalCode().equals(customerPostal)
+                    || !existingCustomer.getPhone().equals(customerPhone)
             ){
+                sql = "UPDATE address\n"
+                        + "INNER JOIN customer ON address.addressId = customer.addressId\n"
+                        + "SET address.address = '" + customerAddress + "', "
+                            + "address.address2 = '" + customerAddress2 + "', "
+                            + "address.postalCode = '" + customerPostal + "', "
+                            + "address.phone = '" + customerPhone + "', "
+                            + "address.lastUpdateBy = '" + loggedInUser + "'\n"
+                        + "WHERE customer.customerId = '" + existingCustomer.getCustomerId() + "'";
 
+                statement.executeUpdate(sql);
             }
 
-            if (existingCustomer.getCustomerName().equals(customerName)){
+            if (!existingCustomer.getCustomerName().equals(customerName)){
+                sql = "UPDATE customer\n"
+                        + "SET customer.customerName = '" + customerName + "', " + "customer.lastUpdateBy = '" + loggedInUser + "'\n"
+                        + "WHERE customer.customerId = '" + existingCustomer.getCustomerId() + "'";
 
+                statement.executeUpdate(sql);
             }
 
             return closeConnection();
 
         } catch (SQLException throwables){
+            System.out.println(throwables);
             closeConnection();
             return ReturnCodes.CONNECTION_FAILURE;
         }

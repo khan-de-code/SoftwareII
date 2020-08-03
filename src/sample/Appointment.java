@@ -1,6 +1,8 @@
 package sample;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class Appointment {
@@ -61,12 +63,16 @@ public class Appointment {
         return url;
     }
 
-    public LocalDateTime getStart() {
-        return start;
+    public OffsetDateTime getStart() {
+        ZoneId currentZone = ZoneId.systemDefault();
+
+        return start.atZone(currentZone).toOffsetDateTime();
     }
 
-    public LocalDateTime getEnd() {
-        return end;
+    public OffsetDateTime getEnd() {
+        ZoneId currentZone = ZoneId.systemDefault();
+
+        return end.atZone(currentZone).toOffsetDateTime();
     }
 
     public int getAppointmentId() {

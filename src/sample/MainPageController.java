@@ -12,13 +12,13 @@ import javafx.scene.text.Text;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.ResourceBundle;
-import java.util.TimeZone;
+import java.util.*;
 
 public class MainPageController implements Initializable {
+    Locale currentLocale;
+
     public String loggedInUser;
     public long loggedInUserID;
 
@@ -80,51 +80,89 @@ public class MainPageController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        currentLocale = Locale.getDefault();
+
         MainPageControllerService mainPageControllerService = new MainPageControllerService();
         mainPageControllerService.init();
         RetVal retVal = mainPageControllerService.getAppointments();
-        appointments = retVal.queryResultsAppointment;
-        title.setCellValueFactory(new PropertyValueFactory<>("title"));
-        description.setCellValueFactory(new PropertyValueFactory<>("description"));
-        location.setCellValueFactory(new PropertyValueFactory<>("contact"));
-        contact.setCellValueFactory(new PropertyValueFactory<>("contact"));
-        type.setCellValueFactory(new PropertyValueFactory<>("type"));
-        urlCol.setCellValueFactory(new PropertyValueFactory<>("url"));
-        start.setCellValueFactory(new PropertyValueFactory<>("start"));
-        end.setCellValueFactory(new PropertyValueFactory<>("end"));
-        name.setCellValueFactory(new PropertyValueFactory<>("customerName"));
 
-        customerName.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
-        address.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
-        address2.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
-        city.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
-        zip.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
-        country.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
-        phone.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+        if (currentLocale.getLanguage() != Locale.GERMAN.getLanguage()) {
+            appointments = retVal.queryResultsAppointment;
+            title.setCellValueFactory(new PropertyValueFactory<>("title"));
+            description.setCellValueFactory(new PropertyValueFactory<>("description"));
+            location.setCellValueFactory(new PropertyValueFactory<>("contact"));
+            contact.setCellValueFactory(new PropertyValueFactory<>("contact"));
+            type.setCellValueFactory(new PropertyValueFactory<>("type"));
+            urlCol.setCellValueFactory(new PropertyValueFactory<>("url"));
+            start.setCellValueFactory(new PropertyValueFactory<>("start"));
+            end.setCellValueFactory(new PropertyValueFactory<>("end"));
+            name.setCellValueFactory(new PropertyValueFactory<>("customerName"));
 
-        customerName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        address.setCellValueFactory(new PropertyValueFactory<>("address"));
-        address2.setCellValueFactory(new PropertyValueFactory<>("address2"));
-        city.setCellValueFactory(new PropertyValueFactory<>("city"));
-        zip.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
-        country.setCellValueFactory(new PropertyValueFactory<>("country"));
-        phone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+            customerName.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+            address.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+            address2.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+            city.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+            zip.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+            country.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+            phone.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
 
-        weekMonthFilter.getItems().add("View All Appointments");
-        weekMonthFilter.getItems().add("View Calendar By Month");
-        weekMonthFilter.getItems().add("View Calendar By Week");
+            customerName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+            address.setCellValueFactory(new PropertyValueFactory<>("address"));
+            address2.setCellValueFactory(new PropertyValueFactory<>("address2"));
+            city.setCellValueFactory(new PropertyValueFactory<>("city"));
+            zip.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
+            country.setCellValueFactory(new PropertyValueFactory<>("country"));
+            phone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        } else {
+            appointments = retVal.queryResultsAppointment;
+            title.setCellValueFactory(new PropertyValueFactory<>("titel"));
+            description.setCellValueFactory(new PropertyValueFactory<>("eschreibung"));
+            location.setCellValueFactory(new PropertyValueFactory<>("ort"));
+            contact.setCellValueFactory(new PropertyValueFactory<>("kontakt"));
+            type.setCellValueFactory(new PropertyValueFactory<>("art"));
+            urlCol.setCellValueFactory(new PropertyValueFactory<>("url"));
+            start.setCellValueFactory(new PropertyValueFactory<>("anfang"));
+            end.setCellValueFactory(new PropertyValueFactory<>("ende"));
+            name.setCellValueFactory(new PropertyValueFactory<>("kundenname"));
+
+            customerName.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+            address.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+            address2.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+            city.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+            zip.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+            country.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+            phone.prefWidthProperty().bind(existingAppointmentTable.widthProperty().divide(7));
+
+            customerName.setCellValueFactory(new PropertyValueFactory<>("kundenname"));
+            address.setCellValueFactory(new PropertyValueFactory<>("adresse"));
+            address2.setCellValueFactory(new PropertyValueFactory<>("adresse2"));
+            city.setCellValueFactory(new PropertyValueFactory<>("stadt"));
+            zip.setCellValueFactory(new PropertyValueFactory<>("postleitzahl"));
+            country.setCellValueFactory(new PropertyValueFactory<>("land"));
+            phone.setCellValueFactory(new PropertyValueFactory<>("telefon"));
+        }
+
+        if (currentLocale.getLanguage() != Locale.GERMAN.getLanguage()) {
+            weekMonthFilter.getItems().add("View All Appointments");
+            weekMonthFilter.getItems().add("View Calendar By Month");
+            weekMonthFilter.getItems().add("View Calendar By Week");
+        } else {
+            weekMonthFilter.getItems().add("Alle Termine anzeigen");
+            weekMonthFilter.getItems().add("Kalender nach Monat anzeigen");
+            weekMonthFilter.getItems().add("Kalender nach Woche anzeigen");
+        }
 
         // lambda expression used here to listen for a change in the combobox value and do filter the current view
         // depending on the option chosen
         weekMonthFilter.valueProperty().addListener((options, oldValue, newValue) -> {
 
             switch (newValue) {
-                case "View All Appointments" -> {
+                case "View All Appointments", "Alle Termine anzeigen" -> {
                     filteredAppointments.clear();
                     filteredAppointments.addAll(appointments);
                     existingAppointmentTable.setItems(filteredAppointments);
                 }
-                case "View Calendar By Month" -> {
+                case "View Calendar By Month", "Kalender nach Monat anzeigen" -> {
                     filteredAppointments.clear();
                     for (Appointment appointment : appointments) {
 
@@ -134,7 +172,7 @@ public class MainPageController implements Initializable {
                     }
                     existingAppointmentTable.setItems(filteredAppointments);
                 }
-                case "View Calendar By Week" -> {
+                case "View Calendar By Week", "Kalender nach Woche anzeigen" -> {
                     filteredAppointments.clear();
                     for (Appointment appointment : appointments) {
                         if (withinAWeek(appointment.getStart())) {
@@ -151,8 +189,6 @@ public class MainPageController implements Initializable {
         existingAppointmentTable.getColumns().clear();
         existingAppointmentTable.getColumns().addAll(name, title, description, location, contact, type, urlCol, start, end);
         existingAppointmentTable.setItems(filteredAppointments);
-
-
     }
 
     public void setLoggedInUser(String loggedInUser, long loggedInUserID){
@@ -167,7 +203,12 @@ public class MainPageController implements Initializable {
 
         view = state.CUSTOMER_RECORDS;
         weekMonthFilter.setVisible(false);
-        pageTitle.setText("Customer Management Portal");
+
+        if (currentLocale.getLanguage() != Locale.GERMAN.getLanguage()) {
+            pageTitle.setText("Customer Management Portal");
+        } else {
+            pageTitle.setText("Kundenverwaltungsportal");
+        }
 
         existingAppointmentTable.getItems().clear();
         existingAppointmentTable.getColumns().clear();
@@ -177,12 +218,22 @@ public class MainPageController implements Initializable {
         RetVal results = existingCustomerService.getCustomers();
 
         if (results.status == ReturnCodes.CONNECTION_FAILURE) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Connection Failure");
-            alert.setHeaderText("Application Connection Failure");
-            alert.setContentText("In the attempt to access the database an error occurred. Please try to close the add" +
-                    "appointment screen then reopen it. If the error persists, please contact support.");
-            alert.showAndWait();
+            if (currentLocale.getLanguage() != Locale.GERMAN.getLanguage()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Connection Failure");
+                alert.setHeaderText("Application Connection Failure");
+                alert.setContentText("In the attempt to access the database an error occurred. Please try to close the add" +
+                        "appointment screen then reopen it. If the error persists, please contact support.");
+                alert.showAndWait();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Verbindungsfehler");
+                alert.setHeaderText("Anwendungsverbindungsfehler");
+                alert.setContentText("Beim Versuch, auf die Datenbank zuzugreifen, ist ein Fehler aufgetreten. " +
+                        "Bitte versuchen Sie, den Bildschirm zum Hinzufügen eines Termins zu schließen und ihn dann " +
+                        "erneut zu öffnen. Wenn der Fehler weiterhin besteht, wenden Sie sich an den Support.");
+                alert.showAndWait();
+            }
         } else {
             customers = results.queryResults;
             filteredCustomers.addAll(customers);
@@ -199,35 +250,46 @@ public class MainPageController implements Initializable {
 
         view = state.APPOINTMENTS;
         weekMonthFilter.setVisible(true);
-        pageTitle.setText("Appointment Management Portal");
+        if (currentLocale.getLanguage() != Locale.GERMAN.getLanguage()) {
+            pageTitle.setText("Appointment Management Portal");
 
-        existingAppointmentTable.getItems().clear();
-        existingAppointmentTable.getColumns().clear();
+            existingAppointmentTable.getItems().clear();
+            existingAppointmentTable.getColumns().clear();
 
-        existingAppointmentTable.getColumns().addAll(name, title, description, location, contact, type, urlCol, start, end);
-        refreshFilter("View All Appointments");
-        existingAppointmentTable.setItems(filteredAppointments);
+            existingAppointmentTable.getColumns().addAll(name, title, description, location, contact, type, urlCol, start, end);
+            refreshFilter("View All Appointments");
+            existingAppointmentTable.setItems(filteredAppointments);
+        } else {
+            pageTitle.setText("Terminverwaltungsportal");
+
+            existingAppointmentTable.getItems().clear();
+            existingAppointmentTable.getColumns().clear();
+
+            existingAppointmentTable.getColumns().addAll(name, title, description, location, contact, type, urlCol, start, end);
+            refreshFilter("Alle Termine anzeigen");
+            existingAppointmentTable.setItems(filteredAppointments);
+        }
     }
 
-    public Boolean withinAWeek(LocalDateTime start){
+    public Boolean withinAWeek(OffsetDateTime start){
         LocalDateTime now = LocalDateTime.now();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Date.from(now.atZone(ZoneId.of(TimeZone.getDefault().getID())).toInstant()));
         int currentWeek = calendar.get(Calendar.WEEK_OF_YEAR);
 
-        calendar.setTime(Date.from(start.atZone(ZoneId.of(TimeZone.getDefault().getID())).toInstant()));
+        calendar.setTime(Date.from(start.toInstant()));
         int checkWeek = calendar.get(Calendar.WEEK_OF_YEAR);
 
         return currentWeek == checkWeek;
     }
 
-    public Boolean withinAMonth(LocalDateTime start){
+    public Boolean withinAMonth(OffsetDateTime start){
         LocalDateTime now = LocalDateTime.now();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Date.from(now.atZone(ZoneId.of(TimeZone.getDefault().getID())).toInstant()));
         int currentMonth = calendar.get(Calendar.MONTH);
 
-        calendar.setTime(Date.from(start.atZone(ZoneId.of(TimeZone.getDefault().getID())).toInstant()));
+        calendar.setTime(Date.from(start.toInstant()));
         int checkMonth = calendar.get(Calendar.MONTH);
 
         return currentMonth == checkMonth;
@@ -235,13 +297,13 @@ public class MainPageController implements Initializable {
 
     public void refreshFilter(String newValue){
 
-        switch (newValue) {
-            case "View All Appointments" -> {
+        switch (newValue) { // This switch statement implements lambdas to immediately execute code as soon as a case is identified
+            case "View All Appointments", "Alle Termine anzeigen" -> {
                 filteredAppointments.clear();
                 filteredAppointments.addAll(appointments);
                 existingAppointmentTable.setItems(filteredAppointments);
             }
-            case "View Calendar By Month" -> {
+            case "View Calendar By Month", "Kalender nach Monat anzeigen" -> {
                 filteredAppointments.clear();
                 for (Appointment appointment : appointments) {
 
@@ -251,7 +313,7 @@ public class MainPageController implements Initializable {
                 }
                 existingAppointmentTable.setItems(filteredAppointments);
             }
-            case "View Calendar By Week" -> {
+            case "View Calendar By Week", "Kalender nach Woche anzeigen" -> {
                 filteredAppointments.clear();
                 for (Appointment appointment : appointments) {
                     if (withinAWeek(appointment.getStart())) {
@@ -334,13 +396,23 @@ public class MainPageController implements Initializable {
             Appointment selectedAppointment = (Appointment) existingAppointmentTable.getSelectionModel().getSelectedItem();
 
             if (selectedAppointment == null) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Update Appointment Error");
-                alert.setHeaderText("Unselected Appointment");
-                alert.setContentText("You have just attempted to update an appointment without selecting an appointment. " +
-                        "Please select an appointment to update then click the \'Update\' button again.");
-                alert.showAndWait();
-                return;
+                if (currentLocale.getLanguage() != Locale.GERMAN.getLanguage()) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Update Appointment Error");
+                    alert.setHeaderText("Unselected Appointment");
+                    alert.setContentText("You have just attempted to update an appointment without selecting an appointment. " +
+                            "Please select an appointment to update then click the \'Update\' button again.");
+                    alert.showAndWait();
+                    return;
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Terminfehler aktualisieren");
+                    alert.setHeaderText("Nicht ausgewählter Termin");
+                    alert.setContentText("Sie haben gerade versucht, einen Termin zu aktualisieren, ohne einen Termin " +
+                            "auszuwählen. Bitte wählen Sie einen zu aktualisierenden Termin aus und klicken Sie erneut " +
+                            "auf die Schaltfläche Aktualisieren.");
+                    alert.showAndWait();
+                }
             }
 
             UpdateAppointment.start(loggedInUser, loggedInUserID, selectedAppointment);
@@ -350,13 +422,23 @@ public class MainPageController implements Initializable {
             Customer selectedCustomer = (Customer) existingAppointmentTable.getSelectionModel().getSelectedItem();
 
             if (selectedCustomer == null){
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Update Customer Error");
-                alert.setHeaderText("Unselected Customer");
-                alert.setContentText("You have just attempted to update a Customer without selecting a Customer. " +
-                        "Please select a Customer to update then click the \'Update\' button again.");
-                alert.showAndWait();
-                return;
+                if (currentLocale.getLanguage() != Locale.GERMAN.getLanguage()) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Update Customer Error");
+                    alert.setHeaderText("Unselected Customer");
+                    alert.setContentText("You have just attempted to update a Customer without selecting a Customer. " +
+                            "Please select a Customer to update then click the \'Update\' button again.");
+                    alert.showAndWait();
+                    return;
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Kundenfehler aktualisieren");
+                    alert.setHeaderText("Nicht ausgewählter Kunde");
+                    alert.setContentText("Sie haben gerade versucht, einen Kunden zu aktualisieren, ohne einen Kunden " +
+                            "auszuwählen. Bitte wählen Sie einen Kunden zum Aktualisieren aus und klicken Sie erneut " +
+                            "auf die Schaltfläche Aktualisieren.");
+                    alert.showAndWait();
+                }
             }
 
             MainPageCustomerEdit.start(loggedInUser, loggedInUserID, selectedCustomer);
@@ -369,13 +451,23 @@ public class MainPageController implements Initializable {
         if (view == state.APPOINTMENTS) {
             Appointment selectedAppointment = (Appointment) existingAppointmentTable.getSelectionModel().getSelectedItem();
             if (selectedAppointment == null) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Delete Appointment Error");
-                alert.setHeaderText("Unselected Appointment");
-                alert.setContentText("You have just attempted to delete an appointment without selecting an appointment. " +
-                        "Please select an appointment to update then click the \'Update\' button again.");
-                alert.showAndWait();
-                return;
+                if (currentLocale.getLanguage() != Locale.GERMAN.getLanguage()) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Delete Appointment Error");
+                    alert.setHeaderText("Unselected Appointment");
+                    alert.setContentText("You have just attempted to delete an appointment without selecting an appointment. " +
+                            "Please select an appointment to update then click the \'Update\' button again.");
+                    alert.showAndWait();
+                    return;
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Terminfehler löschen");
+                    alert.setHeaderText("Nicht ausgewählter Termin");
+                    alert.setContentText("Sie haben gerade versucht, einen Termin zu löschen, ohne einen Termin " +
+                                    "auszuwählen. Bitte wählen Sie einen zu aktualisierenden Termin aus und klicken " +
+                                    "Sie erneut auf die Schaltfläche Aktualisieren.");
+                    alert.showAndWait();
+                }
             }
 
             DeleteAppointmentService deleteAppointmentService = new DeleteAppointmentService();
@@ -386,26 +478,47 @@ public class MainPageController implements Initializable {
         } else {
             Customer selectedCustomer = (Customer) existingAppointmentTable.getSelectionModel().getSelectedItem();
             if (selectedCustomer == null) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Delete Customer Error");
-                alert.setHeaderText("Unselected Customer");
-                alert.setContentText("You have just attempted to delete a customer without selecting a customer. " +
-                        "Please select a customer to update then click the \'Update\' button again.");
-                alert.showAndWait();
-                return;
+                if (currentLocale.getLanguage() != Locale.GERMAN.getLanguage()) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Delete Customer Error");
+                    alert.setHeaderText("Unselected Customer");
+                    alert.setContentText("You have just attempted to delete a customer without selecting a customer. " +
+                            "Please select a customer to update then click the \'Delete\' button again.");
+                    alert.showAndWait();
+                    return;
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Kundenfehler löschen");
+                    alert.setHeaderText("Nicht ausgewählter Kunde");
+                    alert.setContentText("Sie haben gerade versucht, einen Kunden zu löschen, ohne einen Kunden " +
+                            "auszuwählen. Bitte wählen Sie einen Kunden aus, der aktualisiert werden soll, und klicken " +
+                            "Sie erneut auf die Schaltfläche Löschen.");
+                    alert.showAndWait();
+                }
             }
 
             DeleteAppointmentService deleteAppointmentService = new DeleteAppointmentService();
             deleteAppointmentService.init();
             ReturnCodes returnCodes = deleteAppointmentService.deleteCustomer(selectedCustomer);
             if (returnCodes == ReturnCodes.DELETE_CUSTOMER_EXISTING_APPOINTMENT){
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Delete Customer Error");
-                alert.setHeaderText("Existing Customer Appointment");
-                alert.setContentText("You have just attempted to delete a customer that has an appointment in the system. " +
-                        "Please ensure any customer you are attempting to delete first has no existing or past appointments.");
-                alert.showAndWait();
-                return;
+                if (currentLocale.getLanguage() != Locale.GERMAN.getLanguage()) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Delete Customer Error");
+                    alert.setHeaderText("Existing Customer Appointment");
+                    alert.setContentText("You have just attempted to delete a customer that has an appointment in the system. " +
+                            "Please ensure any customer you are attempting to delete first has no existing or past appointments.");
+                    alert.showAndWait();
+                    return;
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Kundenfehler löschen");
+                    alert.setHeaderText("Bestehender Kundentermin");
+                    alert.setContentText("Sie haben gerade versucht, einen Kunden zu löschen, der einen Termin im System " +
+                            "hat. Stellen Sie sicher, dass für jeden Kunden, den Sie zuerst löschen möchten, keine Termine " +
+                            "vorhanden oder vergangen sind.");
+                    alert.showAndWait();
+                    return;
+                }
             }
 
             refreshMainPageAppointments();
