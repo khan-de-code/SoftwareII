@@ -14,6 +14,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 public class MainPageController implements Initializable {
@@ -31,6 +32,11 @@ public class MainPageController implements Initializable {
 
     @FXML
     private Text pageTitle;
+
+    @FXML
+    private RadioButton appointmentRadio;
+    @FXML
+    private RadioButton customerRadio;
 
     @FXML
     private ComboBox<String> weekMonthFilter;
@@ -85,6 +91,25 @@ public class MainPageController implements Initializable {
         MainPageControllerService mainPageControllerService = new MainPageControllerService();
         mainPageControllerService.init();
         RetVal retVal = mainPageControllerService.getAppointments();
+
+        for (Appointment appointment: retVal.queryResultsAppointment){
+            ZoneId currentZone = ZoneId.systemDefault();
+
+            ZonedDateTime current = LocalDateTime.now().atZone(currentZone);
+
+            if (
+                    appointment.getStart().getDayOfYear() == current.getDayOfYear()
+                    && appointment.getStart().isBefore(current.plusMinutes(15))
+                    && appointment.getStart().isAfter(current)
+            ){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Upcoming Appointment");
+                alert.setHeaderText("Upcoming Appointment Warning");
+                alert.setContentText("This message is to alert you to an appointment for " + appointment.getCustomerName() +
+                        " that is within 15 minutes from now.");
+                alert.showAndWait();
+            }
+        }
 
         if (currentLocale.getLanguage() != Locale.GERMAN.getLanguage()) {
             appointments = retVal.queryResultsAppointment;
@@ -152,6 +177,8 @@ public class MainPageController implements Initializable {
             weekMonthFilter.getItems().add("Kalender nach Woche anzeigen");
         }
 
+        appointmentRadio.setSelected(true);
+
         // lambda expression used here to listen for a change in the combobox value and do filter the current view
         // depending on the option chosen
         weekMonthFilter.valueProperty().addListener((options, oldValue, newValue) -> {
@@ -201,6 +228,9 @@ public class MainPageController implements Initializable {
             return;
         }
 
+        customerRadio.setSelected(true);
+        appointmentRadio.setSelected(false);
+
         view = state.CUSTOMER_RECORDS;
         weekMonthFilter.setVisible(false);
 
@@ -248,6 +278,9 @@ public class MainPageController implements Initializable {
             return;
         }
 
+        appointmentRadio.setSelected(true);
+        customerRadio.setSelected(false);
+
         view = state.APPOINTMENTS;
         weekMonthFilter.setVisible(true);
         if (currentLocale.getLanguage() != Locale.GERMAN.getLanguage()) {
@@ -271,7 +304,7 @@ public class MainPageController implements Initializable {
         }
     }
 
-    public Boolean withinAWeek(OffsetDateTime start){
+    public Boolean withinAWeek(ZonedDateTime start){
         LocalDateTime now = LocalDateTime.now();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Date.from(now.atZone(ZoneId.of(TimeZone.getDefault().getID())).toInstant()));
@@ -283,7 +316,7 @@ public class MainPageController implements Initializable {
         return currentWeek == checkWeek;
     }
 
-    public Boolean withinAMonth(OffsetDateTime start){
+    public Boolean withinAMonth(ZonedDateTime start){
         LocalDateTime now = LocalDateTime.now();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Date.from(now.atZone(ZoneId.of(TimeZone.getDefault().getID())).toInstant()));

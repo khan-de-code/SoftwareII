@@ -7,6 +7,10 @@ import javafx.scene.control.TextField;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 class DateTimeValidation {
@@ -56,7 +60,22 @@ class DateTimeValidation {
 
         returnDateTime += " " + hourStr + ":" + minStr + ":00";
 
-        return returnDateTime;
+        return toZonedDateTimeUTC(returnDateTime);
+    }
+
+    public String toZonedDateTimeUTC(String dateTimeString){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        LocalDateTime enteredTime = LocalDateTime.parse(dateTimeString, dtf);
+        ZonedDateTime zonedDateTime = enteredTime.atZone(ZoneId.systemDefault());
+
+        ZonedDateTime convertedUTCDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
+
+        String zonedDateTimeStr = convertedUTCDateTime.toString();
+        String date = zonedDateTimeStr.substring(0, 10);
+        String time = zonedDateTimeStr.substring(11,16) + ":00";
+
+        return  date + " " + time;
     }
 
     public Boolean checkHours(TextField hourField){

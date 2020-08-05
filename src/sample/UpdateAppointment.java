@@ -18,6 +18,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -121,7 +122,7 @@ public class UpdateAppointment implements Initializable {
         window.showAndWait();
     }
 
-    private static String ampm(OffsetDateTime localDateTime) {
+    private static String ampm(ZonedDateTime localDateTime) {
 
         return (localDateTime.getHour() < 13 ? "AM" : "PM");
     }
