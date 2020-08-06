@@ -37,6 +37,8 @@ public class MainPageController implements Initializable {
     private RadioButton appointmentRadio;
     @FXML
     private RadioButton customerRadio;
+    @FXML
+    private Button reports;
 
     @FXML
     private ComboBox<String> weekMonthFilter;
@@ -558,5 +560,8 @@ public class MainPageController implements Initializable {
         }
     }
 
+    public void reportsBtnPushed() throws IOException {
+        new Reports().start(appointments);
+    }
 
 }

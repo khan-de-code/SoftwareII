@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Reports">
+   <center>
+      <TableView fx:id="reports" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="apptTypes" prefWidth="250.99809861183167" text="Appointment Types" />
+          <TableColumn fx:id="count" minWidth="0.0" prefWidth="137.50193786621094" text="Count" />
+            <TableColumn fx:id="consultantName" prefWidth="75.0" text="Consultant" />
+            <TableColumn fx:id="appointment" prefWidth="75.0" text="Start" />
+            <TableColumn fx:id="end" prefWidth="75.0" text="End" />
+            <TableColumn fx:id="customer" prefWidth="75.0" text="Customer" />
+            <TableColumn fx:id="numOfAppointments" prefWidth="75.0" text="Number of Appointments" />
+        </columns>
+      </TableView>
+   </center>
+   <top>
+      <VBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox prefHeight="27.0" prefWidth="555.0">
+               <children>
+                  <RadioButton fx:id="appointmentTypes" mnemonicParsing="false" onAction="#appointmentTypesBtn" text="Appointment Types This Month" />
+                  <RadioButton fx:id="consultantSchedule" mnemonicParsing="false" onAction="#consultantSchedule" text="Consultant Schedule" />
+                  <RadioButton fx:id="customerSchedule" mnemonicParsing="false" onAction="#customerSchedule" text="Appointments Per Customer" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+</BorderPane>

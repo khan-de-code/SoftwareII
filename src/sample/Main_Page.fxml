@@ -26,6 +26,11 @@
                <children>
                   <RadioButton fx:id="customerRadio" mnemonicParsing="false" onAction="#customerRecordsBtnPushed" text="Customer Records" />
                   <RadioButton fx:id="appointmentRadio" mnemonicParsing="false" onAction="#appointmentsBtnPushed" text="Appointments" />
+                  <Button fx:id="reports" alignment="CENTER" mnemonicParsing="false" onAction="#reportsBtnPushed" text="Reports">
+                     <HBox.margin>
+                        <Insets top="-6.0" />
+                     </HBox.margin>
+                  </Button>
                </children>
                <padding>
                   <Insets left="20.0" top="20.0" />
